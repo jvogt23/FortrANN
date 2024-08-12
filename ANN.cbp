@@ -31,10 +31,21 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="DenseLayer.f95" />
-		<Unit filename="main.f95" />
-		<Unit filename="mathy_bois.f95" />
-		<Unit filename="printutils.f95" />
+		<Unit filename="DenseLayer.f95">
+			<Option weight="1" />
+		</Unit>
+		<Unit filename="FileIO.f95">
+			<Option weight="1" />
+		</Unit>
+		<Unit filename="main.f95">
+			<Option weight="2" />
+		</Unit>
+		<Unit filename="mathy_bois.f95">
+			<Option weight="0" />
+		</Unit>
+		<Unit filename="printutils.f95">
+			<Option weight="0" />
+		</Unit>
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

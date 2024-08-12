@@ -15,8 +15,7 @@ module printutils
     ! Each new row appears on a new line.
     ! @param arr - An mxn 2D matrix. Should be one-indexed
     subroutine printMatrix(arr)
-        implicit none
-        real, dimension(:,:), allocatable :: arr
+        real, dimension(:,:), allocatable, intent(in) :: arr
         integer :: dimRow, dimCol, i, j
         if (allocated(arr)) then
             dimRow = size(arr, 1)
@@ -35,7 +34,7 @@ module printutils
     ! This method almost immediately deprecates the one above it lol
     ! Same as printMatrix, but doesnt require an allocatable array
     subroutine printMatrixNonAlloc(arr)
-        real, dimension(:,:) :: arr
+        real, dimension(:,:), intent(in) :: arr
         integer :: dimRow, dimCol, i, j
         dimRow = size(arr, 1)
         dimCol = size(arr, 2)
@@ -48,4 +47,21 @@ module printutils
         end do
         print *, ''
     end subroutine printMatrixNonAlloc
+
+    ! Naive pattern matching algorithm. Please don't use on really big strings, thanks.
+    ! @param a - The longer string
+    ! @param b - The substring
+    ! @param ret - The number to get back.
+    subroutine countSubstrings(a, b, ret)
+        character(*), intent(in) :: a, b
+        integer, intent(out) :: ret
+        integer :: i
+
+        !if (len(a) < len(b)) return
+        !if (len(a).eq.0.or.len(b).eq.0) return
+        do i = 1, len(a) - len(b)
+            if (a(i:i+len(b) - 1) == b) ret = ret + 1
+        end do
+
+    end subroutine countSubstrings
 end module printutils
