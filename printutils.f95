@@ -15,7 +15,7 @@ module printutils
     ! Each new row appears on a new line.
     ! @param arr - An mxn 2D matrix. Should be one-indexed
     subroutine printMatrix(arr)
-        real, dimension(:,:), allocatable, intent(in) :: arr
+        real(kind=8), dimension(:,:), allocatable, intent(in) :: arr
         integer :: dimRow, dimCol, i, j
         if (allocated(arr)) then
             dimRow = size(arr, 1)
@@ -34,7 +34,7 @@ module printutils
     ! This method almost immediately deprecates the one above it lol
     ! Same as printMatrix, but doesnt require an allocatable array
     subroutine printMatrixNonAlloc(arr)
-        real, dimension(:,:), intent(in) :: arr
+        real(kind=8), dimension(:,:), intent(in) :: arr
         integer :: dimRow, dimCol, i, j
         dimRow = size(arr, 1)
         dimCol = size(arr, 2)

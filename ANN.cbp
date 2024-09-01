@@ -31,6 +31,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Activators.f95" />
 		<Unit filename="DenseLayer.f95">
 			<Option weight="1" />
 		</Unit>

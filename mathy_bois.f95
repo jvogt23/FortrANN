@@ -9,8 +9,8 @@
 module mathy_bois
     implicit none
     ! Constants
-    real :: pi = 3.141592653589793
-    real :: e  = 2.718281828459045
+    real(kind=8) :: pi = 3.141592653589793
+    real(kind=8) :: e  = 2.718281828459045
 
 contains
 
@@ -18,8 +18,9 @@ contains
     ! distribution random number into a normal Gaussian distribution
     ! random number.
     ! @return a real random number within the normal distribution
-    real function rand_normal()
-        real :: U_1, U_2
+    function rand_normal()
+        real(kind=8) :: U_1, U_2
+        real(kind=8) :: rand_normal
         call random_number(U_1)
         call random_number(U_2)
         U_1 = abs(U_1)
@@ -29,8 +30,8 @@ contains
     end function rand_normal
 
     function e_raise(mat)
-        real, dimension(:,:) :: mat
-        real :: e_raise(size(mat, 1), size(mat, 2))
+        real(kind=8), dimension(:,:) :: mat
+        real(kind=8) :: e_raise(size(mat, 1), size(mat, 2))
         e_raise = e ** mat
     end function e_raise
 

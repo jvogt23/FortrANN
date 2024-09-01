@@ -4,13 +4,12 @@ module mod_DenseLayer
 
     type :: DenseLayer
         integer :: nNeurons, nInputs
-        real, dimension(:,:), allocatable :: weights
-        real, dimension(:), allocatable :: biases
-        real, dimension(:,:), allocatable :: outputs
+        real(kind=8), dimension(:,:), allocatable :: weights
+        real(kind=8), dimension(:), allocatable :: biases
+        real(kind=8), dimension(:,:), allocatable :: outputs
     contains
         procedure :: init
         procedure :: forward
-        procedure :: relu_forward
     end type DenseLayer
 
 contains
@@ -21,8 +20,8 @@ contains
         class(DenseLayer) :: self
         integer, intent(in) :: nInputs, nNeurons
         integer :: i, j
-        real, dimension(nInputs, nNeurons) :: tempWeights
-        real, dimension(nNeurons) :: tempBiases
+        real(kind=8), dimension(nInputs, nNeurons) :: tempWeights
+        real(kind=8), dimension(nNeurons) :: tempBiases
         self%weights = tempWeights
         self%biases = tempBiases
         self%biases = 0.0
@@ -40,24 +39,8 @@ contains
     !                 The same number of columns as the rows in weights.
     subroutine forward(self, inputs)
         class(DenseLayer) :: self
-        real, dimension(:,:), intent(in) :: inputs
+        real(kind=8), dimension(:,:), intent(in) :: inputs
         self%outputs = matmul(inputs, self%weights)
     end subroutine forward
-
-    ! ReLU activation function - returns a set of outputs
-    ! rectified such that any output value in self%outputs
-    ! which is <= 0 is set to 0.
-    ! @return mxn matrix of same size as outputs
-    function relu_forward(self)
-        class(DenseLayer) :: self
-        integer :: i, j
-        real, allocatable :: relu_forward(:,:)
-        allocate(relu_forward(size(self%outputs, 1), size(self%outputs, 2)))
-        do i = 1, size(self%outputs, 1)
-            do j = 1, size(self%outputs, 2)
-                relu_forward(i, j) = max(self%outputs(i, j), 0.0)
-            end do
-        end do
-    end function relu_forward
 
 end module mod_DenseLayer

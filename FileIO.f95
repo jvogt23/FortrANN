@@ -11,7 +11,7 @@ module CsvFileIO
     ! (Trust me, I would make this generic if I knew how. Some day!)
     type :: CsvFile
         integer :: iounit, numCol, numRow, ioS
-        real, dimension(:,:), allocatable :: dataSet
+        real(kind=8), dimension(:,:), allocatable :: dataSet
         character(:), allocatable :: rawData
     contains
         procedure :: openCsvFile
@@ -31,7 +31,7 @@ contains
         integer :: ioS, fileSize, i, j, k
         character(256), dimension(:), allocatable :: splitRawData ! sorry about the assumed length; I only need this to work once
         logical :: OK
-        real :: dummy
+        real(kind=8) :: dummy
         ! procedure
         inquire(file=fileName, exist=OK, size=fileSize)
         if (OK) then
