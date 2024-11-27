@@ -53,8 +53,8 @@ contains
             self%ioS = 1
             return
         end if
-        print *, fileSize
-        print *, self%rawData
+        !print *, fileSize
+        !print *, self%rawData
         call self%findCols()
         call self%findRows()
         allocate(splitRawData(self%numRow * self%numCol))
@@ -68,7 +68,7 @@ contains
                 k = k + 1
             end do
         end do
-        call printMatrixNonAlloc(self%dataSet)
+        !call printMatrixNonAlloc(self%dataSet)
         self%ioS = 0
     end subroutine openCsvFile
 
