@@ -4,13 +4,17 @@ module mod_DenseLayer
 
     type :: DenseLayer
         integer :: nNeurons, nInputs
-        real, dimension(:,:), allocatable :: weights
-        real, dimension(:), allocatable :: biases
-        real, dimension(:,:), allocatable :: outputs
+        real(kind=8), dimension(:,:), allocatable :: weights
+        real(kind=8), dimension(:), allocatable :: biases
+        real(kind=8), dimension(:,:), allocatable :: inputs
+        real(kind=8), dimension(:,:), allocatable :: outputs
+        real(kind=8), dimension(:,:), allocatable :: dweights
+        real(kind=8), dimension(:,:), allocatable :: dinputs
+        real(kind=8), dimension(:), allocatable :: dbiases
     contains
         procedure :: init
         procedure :: forward
-        procedure :: relu_forward
+        procedure :: backward
     end type DenseLayer
 
 contains
@@ -21,8 +25,8 @@ contains
         class(DenseLayer) :: self
         integer, intent(in) :: nInputs, nNeurons
         integer :: i, j
-        real, dimension(nInputs, nNeurons) :: tempWeights
-        real, dimension(nNeurons) :: tempBiases
+        real(kind=8), dimension(nInputs, nNeurons) :: tempWeights
+        real(kind=8), dimension(nNeurons) :: tempBiases
         self%weights = tempWeights
         self%biases = tempBiases
         self%biases = 0.0
@@ -38,26 +42,49 @@ contains
     ! Performs a forward pass through the layer.
     ! @param inputs - A matrix of input values. Must have
     !                 The same number of columns as the rows in weights.
-    subroutine forward(self, inputs)
+    subroutine forward(self, input)
         class(DenseLayer) :: self
-        real, dimension(:,:), intent(in) :: inputs
-        self%outputs = matmul(inputs, self%weights)
+        real(kind=8), dimension(:,:), intent(in) :: input
+
+        if (allocated(self%inputs)) then
+            deallocate(self%inputs)
+        end if
+        allocate(self%inputs(size(input, 1), size(input, 2)))
+        self%inputs = input
+        self%outputs = matmul(input, self%weights)
     end subroutine forward
 
-    ! ReLU activation function - returns a set of outputs
-    ! rectified such that any output value in self%outputs
-    ! which is <= 0 is set to 0.
-    ! @return mxn matrix of same size as outputs
-    function relu_forward(self)
-        class(DenseLayer) :: self
-        integer :: i, j
-        real, allocatable :: relu_forward(:,:)
-        allocate(relu_forward(size(self%outputs, 1), size(self%outputs, 2)))
-        do i = 1, size(self%outputs, 1)
-            do j = 1, size(self%outputs, 2)
-                relu_forward(i, j) = max(self%outputs(i, j), 0.0)
-            end do
-        end do
-    end function relu_forward
+    ! Performs a backward pass through the layer.
+    ! Produces values for dweights, dbiases, and dinputs.
+    ! Requires the results for a backward pass through the layer's activator
+    subroutine backward(self, dAct)
+        class(DenseLayer), intent(inout) :: self
+        real(kind=8), dimension(:,:), allocatable, intent(in) :: dAct
+
+        if (.not.allocated(dAct)) then
+            print *, "Parameter dAct must be allocated."
+            stop
+        end if
+
+        if (allocated(self%dweights)) then
+            deallocate(self%dweights)
+        end if
+
+        if (allocated(self%dinputs)) then
+            deallocate(self%dinputs)
+        end if
+
+        if (allocated(self%dbiases)) then
+            deallocate(self%dbiases)
+        end if
+
+        allocate(self%dbiases(size(self%biases)))
+        allocate(self%dweights(size(transpose(self%inputs), 1), size(dAct, 2)))
+        allocate(self%dinputs(size(dAct, 1), size(transpose(self%weights), 2)))
+
+        self%dbiases = sum(dAct, 1)
+        self%dweights = matmul(transpose(self%inputs), dAct)
+        self%dinputs = matmul(dAct, transpose(self%weights))
+    end subroutine backward
 
 end module mod_DenseLayer
